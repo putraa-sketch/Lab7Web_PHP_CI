@@ -1,48 +1,344 @@
 # Lab 7 - Pemrograman Web 2 (Framework CodeIgniter 4)
 
-Repositori ini berisi hasil Praktikum 1 pada mata kuliah Pemrograman Web 2, yang berfokus pada pengenalan Framework PHP **CodeIgniter 4 (CI4)** dengan konsep **MVC (Model-View-Controller)**.
+Repositori ini berisi hasil Praktikum pada mata kuliah Pemrograman Web 2, yang berfokus pada pengenalan Framework PHP **CodeIgniter 4 (CI4)** dengan konsep **MVC (Model-View-Controller)**.
 
 ## Identitas
+
 * **Nama:** Abdi Putra Perdana
 * **NIM:** 312410426
 * **Kelas:** I241C
 
+---
+
 ## Persiapan
-1.  Mengaktifkan ekstensi PHP di `php.ini` (XAMPP):
-    - `php-json`
-    - `php-mysqlnd`
-    - `php-xml`
-    - `php-intl`
-    - `mbstring`
-2.  Konfigurasi `.env` untuk mode development:
-    ```env
-    CI_ENVIRONMENT = development
-    ```
 
-## Langkah Praktikum
-1.  **Instalasi CI4:** Melakukan instalasi manual di folder `htdocs/lab11_php_ci`.
-2.  **Membuat Controller:** Membuat file `Page.php` untuk menangani navigasi halaman (About, Contact, FAQs, Artikel).
-3.  **Konfigurasi Routing:** Mengatur rute URL di `app/Config/Routes.php`.
-4.  **Membuat Layout (Template):** Membagi tampilan menjadi `header.php` dan `footer.php` agar desain konsisten di semua halaman.
-5.  **Membuat View:** Implementasi file view untuk setiap menu menggunakan perintah `$this->include()`.
+1. Mengaktifkan ekstensi PHP di `php.ini` (XAMPP):
+   - `php-json`
+   - `php-mysqlnd`
+   - `php-xml`
+   - `php-intl`
+   - `mbstring`
+2. Konfigurasi `.env` untuk mode development:
+   ```env
+   CI_ENVIRONMENT = development
+   ```
 
-## Tugas: Melengkapi Menu Navigasi
+---
+
+## Praktikum 1 - Pengenalan Framework CI4 & MVC
+
+### Tujuan
+- Memahami konsep dasar MVC pada CodeIgniter 4
+- Membuat routing, controller, dan view sederhana
+
+### Langkah-langkah
+
+1. **Instalasi CI4:** Melakukan instalasi manual di folder `htdocs/lab11_php_ci`.
+2. **Membuat Controller:** Membuat file `Page.php` untuk menangani navigasi halaman (About, Contact, FAQs, Artikel).
+3. **Konfigurasi Routing:** Mengatur rute URL di `app/Config/Routes.php`.
+4. **Membuat Layout (Template):** Membagi tampilan menjadi `header.php` dan `footer.php` agar desain konsisten di semua halaman.
+5. **Membuat View:** Implementasi file view untuk setiap menu menggunakan perintah `$this->include()`.
+
+### Tugas: Melengkapi Menu Navigasi
+
 Tugas praktikum ini adalah memastikan semua link pada navigasi (Home, Artikel, About, Contact, FAQ) bekerja dengan layout yang seragam.
 
-### Struktur File yang Dikerjakan:
+#### Struktur File yang Dikerjakan:
 - `app/Controllers/Page.php`
 - `app/Config/Routes.php`
 - `app/Views/template/header.php`
 - `app/Views/template/footer.php`
 - `app/Views/about.php`, `contact.php`, `faqs.php`, `artikel.php`
 
-## Screenshot Hasil
+### Screenshot Hasil
 
-### Halaman About
+#### Halaman About
 <img width="1919" height="946" alt="image" src="https://github.com/user-attachments/assets/e3c9c625-f32b-4d61-8c1e-b8b15f090f8a" />
 
-### Halaman Contact
+#### Halaman Contact
 <img width="1919" height="869" alt="image" src="https://github.com/user-attachments/assets/fb613316-36c6-4c7b-b34c-f1072488a489" />
 
 ---
+
+## Praktikum 2 - Framework Lanjutan (CRUD)
+
+### Tujuan
+- Memahami konsep dasar **Model** pada CodeIgniter 4
+- Memahami konsep dasar **CRUD** (Create, Read, Update, Delete)
+- Membuat program sederhana menggunakan Framework CodeIgniter 4
+
+---
+
+### Persiapan Database
+
+Praktikum ini menggunakan database MySQL melalui XAMPP. Dibuat database `lab_ci4` dengan tabel `artikel`.
+
+**Struktur Tabel `artikel`:**
+
+| Field  | Tipe Data | Ukuran | Keterangan |
+|--------|-----------|--------|------------|
+| id     | INT       | 11     | PRIMARY KEY, auto_increment |
+| judul  | VARCHAR   | 200    | |
+| isi    | TEXT      | -      | |
+| gambar | VARCHAR   | 200    | |
+| status | TINYINT   | 1      | DEFAULT 0 |
+| slug   | VARCHAR   | 200    | |
+
+**Query SQL:**
+```sql
+CREATE DATABASE lab_ci4;
+
+CREATE TABLE artikel (
+  id INT(11) auto_increment,
+  judul VARCHAR(200) NOT NULL,
+  isi TEXT,
+  gambar VARCHAR(200),
+  status TINYINT(1) DEFAULT 0,
+  slug VARCHAR(200),
+  PRIMARY KEY(id)
+);
+```
+
+**Konfigurasi Database** dilakukan pada file `.env`:
+```env
+database.default.hostname = localhost
+database.default.database = lab_ci4
+database.default.username = root
+database.default.password =
+database.default.DBDriver = MySQLi
+database.default.DBPrefix =
+```
+
+---
+
+### Langkah 1 - Membuat Model
+
+Model dibuat untuk memproses data dari tabel `artikel`. File disimpan di `app/Models/ArtikelModel.php`.
+
+```php
+<?php
+namespace App\Models;
+use CodeIgniter\Model;
+
+class ArtikelModel extends Model
+{
+    protected $table = 'artikel';
+    protected $primaryKey = 'id';
+    protected $useAutoIncrement = true;
+    protected $allowedFields = ['judul', 'isi', 'status', 'slug', 'gambar'];
+}
+```
+
+> Model ini mendefinisikan nama tabel, primary key, dan field yang diizinkan untuk operasi insert/update.
+
+---
+
+### Langkah 2 - Membuat Controller
+
+Controller `Artikel.php` dibuat di `app/Controllers/` dengan method `index()` untuk menampilkan daftar artikel.
+
+```php
+public function index()
+{
+    $title = 'Daftar Artikel';
+    $model = new ArtikelModel();
+    $artikel = $model->findAll();
+    return view('artikel/index', compact('artikel', 'title'));
+}
+```
+
+---
+
+### Langkah 3 - Membuat View Daftar Artikel
+
+File view `index.php` dibuat di direktori `app/Views/artikel/`. View ini menampilkan semua artikel yang diambil dari database.
+
+```php
+<?= $this->include('template/header'); ?>
+<?php if($artikel): foreach($artikel as $row): ?>
+<article class="entry">
+    <h2><a href="<?= base_url('/artikel/' . $row['slug']);?>"><?= $row['judul']; ?></a></h2>
+    <img src="<?= base_url('/gambar/' . $row['gambar']);?>" alt="<?= $row['judul']; ?>">
+    <p><?= substr($row['isi'], 0, 200); ?></p>
+</article>
+<hr class="divider" />
+<?php endforeach; else: ?>
+<article class="entry">
+    <h2>Belum ada data.</h2>
+</article>
+<?php endif; ?>
+<?= $this->include('template/footer'); ?>
+```
+
+Kemudian ditambahkan data uji ke database:
+
+```sql
+INSERT INTO artikel (judul, isi, slug) VALUE
+('Artikel pertama', 'Lorem Ipsum adalah contoh teks...', 'artikel-pertama'),
+('Artikel kedua', 'Tidak seperti anggapan banyak orang...', 'artikel-kedua');
+```
+
+#### Screenshot - Daftar Artikel
+
+<img width="1919" height="950" alt="image" src="https://github.com/user-attachments/assets/07466127-1142-4d91-9baa-879da92dd086" />
+
+---
+
+### Langkah 4 - Membuat Tampilan Detail Artikel
+
+Ditambahkan method `view($slug)` pada Controller Artikel untuk menampilkan detail artikel berdasarkan slug.
+
+```php
+public function view($slug)
+{
+    $model = new ArtikelModel();
+    $artikel = $model->where(['slug' => $slug])->first();
+
+    if (!$artikel) {
+        throw PageNotFoundException::forPageNotFound();
+    }
+
+    $title = $artikel['judul'];
+    return view('artikel/detail', compact('artikel', 'title'));
+}
+```
+
+File view detail dibuat di `app/Views/artikel/detail.php`. Routing untuk halaman detail juga ditambahkan di `app/Config/Routes.php`:
+
+```php
+$routes->get('/artikel/(:any)', 'Artikel::view/$1');
+```
+
+#### Screenshot - Detail Artikel
+
+<img width="1919" height="956" alt="image" src="https://github.com/user-attachments/assets/207209d7-c7a4-424f-816d-5b191f6218e1" />
+
+---
+
+### Langkah 5 - Membuat Menu Admin (CRUD)
+
+Menu admin digunakan untuk mengelola data artikel (Create, Read, Update, Delete). Ditambahkan method `admin_index()` pada Controller Artikel.
+
+```php
+public function admin_index()
+{
+    $title = 'Daftar Artikel';
+    $model = new ArtikelModel();
+    $artikel = $model->findAll();
+    return view('artikel/admin_index', compact('artikel', 'title'));
+}
+```
+
+View `admin_index.php` menampilkan tabel artikel lengkap dengan tombol **Ubah** dan **Hapus**.
+
+Routing untuk menu admin dikonfigurasi sebagai group:
+
+```php
+$routes->group('admin', function($routes) {
+    $routes->get('artikel', 'Artikel::admin_index');
+    $routes->add('artikel/add', 'Artikel::add');
+    $routes->add('artikel/edit/(:any)', 'Artikel::edit/$1');
+    $routes->get('artikel/delete/(:any)', 'Artikel::delete/$1');
+});
+```
+
+#### Screenshot - Halaman Admin
+
+<img width="1919" height="951" alt="image" src="https://github.com/user-attachments/assets/995f4a3a-5df6-465c-8736-888c4f4050a7" />
+
+---
+
+### Langkah 6 - Menambah Data Artikel (Create)
+
+Ditambahkan method `add()` pada Controller Artikel. Method ini menangani validasi dan penyimpanan data baru ke database.
+
+```php
+public function add()
+{
+    $validation = \Config\Services::validation();
+    $validation->setRules(['judul' => 'required']);
+    $isDataValid = $validation->withRequest($this->request)->run();
+
+    if ($isDataValid) {
+        $artikel = new ArtikelModel();
+        $artikel->insert([
+            'judul' => $this->request->getPost('judul'),
+            'isi'   => $this->request->getPost('isi'),
+            'slug'  => url_title($this->request->getPost('judul')),
+        ]);
+        return redirect('admin/artikel');
+    }
+
+    $title = "Tambah Artikel";
+    return view('artikel/form_add', compact('title'));
+}
+```
+
+Form tambah artikel dibuat di `app/Views/artikel/form_add.php`.
+
+#### Screenshot - Form Tambah Artikel
+
+<img width="1919" height="950" alt="image" src="https://github.com/user-attachments/assets/110d7d70-e1f2-4fd9-bb8f-9d1a250926c6" />
+
+
+---
+
+### Langkah 7 - Mengubah Data Artikel (Update)
+
+Ditambahkan method `edit($id)` pada Controller Artikel untuk memuat data lama dan menyimpan perubahan.
+
+```php
+public function edit($id)
+{
+    $artikel = new ArtikelModel();
+    $validation = \Config\Services::validation();
+    $validation->setRules(['judul' => 'required']);
+    $isDataValid = $validation->withRequest($this->request)->run();
+
+    if ($isDataValid) {
+        $artikel->update($id, [
+            'judul' => $this->request->getPost('judul'),
+            'isi'   => $this->request->getPost('isi'),
+        ]);
+        return redirect('admin/artikel');
+    }
+
+    $data = $artikel->where('id', $id)->first();
+    $title = "Edit Artikel";
+    return view('artikel/form_edit', compact('title', 'data'));
+}
+```
+
+Form edit artikel dibuat di `app/Views/artikel/form_edit.php` dengan nilai input yang sudah terisi data lama.
+
+#### Screenshot - Form Edit Artikel
+
+<img width="1919" height="947" alt="image" src="https://github.com/user-attachments/assets/9968de99-c21b-4c5c-8eb6-ac4eccc90310" />
+
+---
+
+### Langkah 8 - Menghapus Data Artikel (Delete)
+
+Ditambahkan method `delete($id)` pada Controller Artikel untuk menghapus data berdasarkan ID.
+
+```php
+public function delete($id)
+{
+    $artikel = new ArtikelModel();
+    $artikel->delete($id);
+    return redirect('admin/artikel');
+}
+```
+
+Penghapusan data dilakukan setelah pengguna mengkonfirmasi melalui dialog `confirm()` di halaman admin.
+
+#### Screenshot - Konfirmasi Hapus
+
+<img width="1919" height="946" alt="image" src="https://github.com/user-attachments/assets/7867f2b9-22eb-4064-b8e4-fe50aafb5f6c" />
+
+
+---
+
+---
+
 © 2026 - Abdi Putra Perdana - Universitas Pelita Bangsa
