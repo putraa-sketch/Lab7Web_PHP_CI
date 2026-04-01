@@ -339,6 +339,57 @@ Penghapusan data dilakukan setelah pengguna mengkonfirmasi melalui dialog `confi
 
 ---
 
+## Praktikum 3 - View Layout dan View Cell
+
+### Tujuan
+Memahami konsep View Layout di CodeIgniter 4.
+Menggunakan View Layout untuk membuat template tampilan.
+Memahami dan mengimplementasikan View Cell untuk memanggil komponen UI secara modular.
+
+### Langkah-langkah
+Membuat Layout Utama: Memusatkan kerangka HTML (header, nav, sidebar, footer) pada satu file utama di app/Views/layout/main.php. File ini menggunakan $this->renderSection('content') sebagai tempat untuk menyisipkan konten dinamis.
+
+Membuat Class View Cell: Membuat komponen modular ArtikelTerkini.php pada folder app/Cells/ yang berfungsi mengambil 5 artikel terbaru dari database.
+
+Membuat Tampilan View Cell: Mengatur antarmuka untuk widget artikel terkini pada file app/Views/components/artikel_terkini.php. Komponen ini dipanggil pada sidebar layout utama.
+
+Modifikasi File View: Mengubah file view halaman (seperti about.php atau artikel/index.php) agar meng-extend layout utama dan mengisi blok konten dengan perintah $this->section('content').
+
+#### Screenshot Hasil Praktikum 3
+<img width="1919" height="948" alt="image" src="https://github.com/user-attachments/assets/79fd51d3-d1f4-47b7-81d7-60bbe954fce6" />
+
+---
+
+## Praktikum 4 - Framework Lanjutan (Modul Login)
+
+### Tujuan
+Memahami konsep dasar Auth dan Filter.
+Memahami konsep dasar Login System.
+Membuat modul login menggunakan Framework CodeIgniter 4.
+
+### Langkah-langkah
+Membuat Tabel User & Database Seeder:
+
+Membuat tabel user untuk menampung data admin .
+
+Membuat file UserSeeder.php (php spark make:seeder UserSeeder) untuk membuat data admin dummy dan melakukan enkripsi password menggunakan hash.
+
+Membuat Model User: Membuat file UserModel.php untuk memetakan interaksi tabel user dengan CodeIgniter.
+
+Membuat Controller User: Menambahkan logika validasi email dan kecocokan password (password_verify) di dalam User.php. Apabila valid, data sesi (session) pengguna akan disimpan.
+
+Membuat View Login: Merancang tampilan form otentikasi pada app/Views/user/login.php yang dilengkapi pesan Flashdata apabila login gagal.
+
+Menambahkan Auth Filter: - Membuat kelas Filter Auth.php untuk memeriksa session. Pengguna yang belum login akan dilempar (redirect) otomatis ke halaman login .
+
+Mendaftarkan filter tersebut di file app/Config/Filters.php.
+
+Melindungi Rute Admin: Mengelompokkan seluruh Routes bagian admin ($routes->group) dan menyisipkan filter auth agar tidak dapat diakses secara publik.
+
+#### Screenshot Hasil Praktikum 4
+<img width="1919" height="951" alt="image" src="https://github.com/user-attachments/assets/46e76b5f-8ec6-425c-8c5f-ae112a8c3bcb" />
+
+
 ---
 
 © 2026 - Abdi Putra Perdana - Universitas Pelita Bangsa
