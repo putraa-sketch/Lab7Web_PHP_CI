@@ -386,10 +386,65 @@ Mendaftarkan filter tersebut di file app/Config/Filters.php.
 
 Melindungi Rute Admin: Mengelompokkan seluruh Routes bagian admin ($routes->group) dan menyisipkan filter auth agar tidak dapat diakses secara publik.
 
-#### Screenshot Hasil Praktikum 4
+### Screenshot Hasil Praktikum 4
 <img width="1919" height="951" alt="image" src="https://github.com/user-attachments/assets/46e76b5f-8ec6-425c-8c5f-ae112a8c3bcb" />
-
 
 ---
 
+## Praktikum 5 - Pagination dan Pencarian
+### Tujuan
+- Memahami konsep dasar Paginasi (Pagination). 
+- Memahami konsep dasar Pencarian (Search). 
+- Mengimplementasikan Paging dan Pencarian menggunakan fitur bawaan CodeIgniter 4. 
+
+### Langkah-langkah
+
+- Implementasi Paginasi: Menggunakan metode paginate() pada Model untuk membatasi jumlah baris data yang ditampilkan per halaman. 
+- Menampilkan Navigasi Paginasi: Menambahkan fungsi <?= $pager->links(); ?> di file view untuk merender tombol navigasi halaman secara otomatis. 
+- Membuat Fitur Pencarian: Menangkap input kata kunci (q) dari URL menggunakan getVar() dan menerapkannya ke dalam query database menggunakan metode like(). 
+- Integrasi Paginasi dan Pencarian: Menggunakan fungsi only(['q']) pada pager agar parameter pencarian tidak hilang saat pengguna berpindah ke halaman berikutnya. 
+
+### Screenshot Hasil Praktikum 5
+<img width="1919" height="944" alt="Cuplikan layar 2026-04-15 135835" src="https://github.com/user-attachments/assets/fda829d6-49c4-428b-8daf-bce2a1dc2d64" />
+
+---
+
+## Lab 12: Relasi Tabel dan Query Builder (Praktikum 6)
+
+Pada praktikum ini, struktur database dikembangkan dengan menerapkan konsep relasi antar tabel (One-to-Many) dan penggunaan *Query Builder* bawaan CodeIgniter 4 untuk menggabungkan data (*Join*). 
+
+### Tujuan
+- Memahami konsep relasi antar tabel dalam database.
+- Mengimplementasikan relasi *One-to-Many* (Satu Kategori memiliki Banyak Artikel).
+- Melakukan query penggabungan tabel (*Join*) menggunakan *Query Builder* CI4.
+- Menampilkan data terintegrasi dari tabel yang berelasi ke dalam antarmuka web.
+
+### Langkah-langkah Praktikum
+
+1. **Pembuatan Tabel Kategori & Relasi Database:**
+   - Membuat tabel baru bernama `kategori` (`id_kategori`, `nama_kategori`, `slug_kategori`) 
+   - Menambahkan kolom `id_kategori` pada tabel `artikel` dan menjadikannya sebagai *Foreign Key* yang merujuk ke tabel `kategori` 
+
+2. **Pembuatan KategoriModel:**
+   - Membuat `app/Models/KategoriModel.php` untuk mendefinisikan interaksi dengan tabel `kategori` 
+
+3. **Modifikasi ArtikelModel (Join Query):**
+   - Menambahkan `id_kategori` ke dalam properti `$allowedFields` 
+   - Membuat metode baru `getArtikelDenganKategori()` yang mengimplementasikan *Query Builder* `join()` untuk mengambil data artikel beserta nama kategorinya 
+
+4. **Modifikasi Controller Artikel:**
+   - Memanggil `KategoriModel` di dalam `Artikel.php`
+   - [cite_start]Mengubah metode `index()` dan `admin_index()` untuk memuat data kategori dan menerapkannya pada *dropdown* filter 
+   - [cite_start]Memodifikasi metode `add()` dan `edit()` agar dapat menangkap dan menyimpan data `id_kategori` ke dalam database 
+
+5. **Modifikasi View (Antarmuka Admin):**
+   - **Tabel Admin (`admin_index.php`):** Menambahkan *dropdown* untuk memfilter artikel berdasarkan kategori dan menambahkan kolom "Kategori" di dalam tabel data .
+   - **Formulir (`form_add.php` & `form_edit.php`):** Menambahkan elemen `<select>` yang di- *looping* dari data tabel kategori, memungkinkan pengguna untuk memilih kategori saat membuat atau mengubah artikel 
+
+### Screenshot Hasil Praktikum 6
+<img width="1919" height="959" alt="image" src="https://github.com/user-attachments/assets/d61ae131-ffd3-404c-92c2-1ddb38ce306c" />
+
+
+---
 © 2026 - Abdi Putra Perdana - Universitas Pelita Bangsa
+
