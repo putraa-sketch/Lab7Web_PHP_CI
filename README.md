@@ -409,7 +409,7 @@ Melindungi Rute Admin: Mengelompokkan seluruh Routes bagian admin ($routes->grou
 
 ---
 
-## Lab 12: Relasi Tabel dan Query Builder (Praktikum 6)
+## Prakktikum 6: Relasi Tabel dan Query Builder
 
 Pada praktikum ini, struktur database dikembangkan dengan menerapkan konsep relasi antar tabel (One-to-Many) dan penggunaan *Query Builder* bawaan CodeIgniter 4 untuk menggabungkan data (*Join*). 
 
