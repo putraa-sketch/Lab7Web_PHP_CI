@@ -411,7 +411,7 @@ Melindungi Rute Admin: Mengelompokkan seluruh Routes bagian admin ($routes->grou
 
 ## Prakktikum 6: Relasi Tabel dan Query Builder
 
-Pada praktikum ini, struktur database dikembangkan dengan menerapkan konsep relasi antar tabel (One-to-Many) dan penggunaan *Query Builder* bawaan CodeIgniter 4 untuk menggabungkan data (*Join*). 
+Pada praktikum ini, struktur database dikembangkan dengan menerapkan konsep relasi antar tabel (One-to-Many) dan penggunaan *Query Builder* bawaan CodeIgniter 4 untuk menggabungkan data (*Join*) serta sedikit Improvisasi. 
 
 ### Tujuan
 - Memahami konsep relasi antar tabel dalam database.
@@ -442,9 +442,44 @@ Pada praktikum ini, struktur database dikembangkan dengan menerapkan konsep rela
    - **Formulir (`form_add.php` & `form_edit.php`):** Menambahkan elemen `<select>` yang di- *looping* dari data tabel kategori, memungkinkan pengguna untuk memilih kategori saat membuat atau mengubah artikel 
 
 ### Screenshot Hasil Praktikum 6
-<img width="1919" height="959" alt="image" src="https://github.com/user-attachments/assets/d61ae131-ffd3-404c-92c2-1ddb38ce306c" />
+<img width="1919" height="952" alt="image" src="https://github.com/user-attachments/assets/82afcb8c-5490-4941-bc8a-b4d313aaa1e1" />
+
+
+### Pengembangan Fitur (Tugas Mandiri, Opsional dan Improvisasi)
+
+Selain implementasi dasar relasi tabel, berikut adalah fitur tambahan yang telah diimplementasikan sesuai instruksi tugas:
+
+#### 1. Implementasi Kategori pada Detail Artikel (Tugas 2)
+Modifikasi pada file `app/Views/artikel/detail.php` dan `app/Controllers/Artikel.php` untuk menampilkan label kategori pada setiap artikel yang dibaca
+- **Teknis:** Menggunakan *Query Builder* `join` pada method `view($slug)` untuk menarik data `nama_kategori` berdasarkan `id_kategori`.
+
+#### 2. Widget Daftar Kategori di Halaman Depan (Tugas 3)
+Menambahkan *sidebar* dinamis pada halaman index pengunjung yang menampilkan seluruh daftar kategori yang tersedia di database
+- **Teknis:** Memanggil `KategoriModel` di dalam method `index()` dan mengirimkan datanya ke view `artikel/index.php`.
+
+#### 3. Fitur Filter Artikel per Kategori (Tugas 4)
+Memungkinkan pengunjung untuk memfilter daftar artikel hanya berdasarkan kategori tertentu yang dipilih melalui sidebar
+- **Teknis:** - Menambahkan rute baru: `$routes->get('/artikel/kategori/(:any)', 'Artikel::category/$1');`.
+  - Membuat method `category($slug)` di Controller untuk melakukan filtering data artikel menggunakan `where` clause pada kolom `slug_kategori`.
+
+### Struktur Perubahan Kode (Update)
+
+**Routes (`app/Config/Routes.php`):**
+Mendaftarkan rute kategori di atas rute detail artikel untuk menghindari *route collision* (404 error).
+
+**Controller (`app/Controllers/Artikel.php`):**
+Penambahan logika pada method `view()`, `index()`, dan pembuatan method baru `category()`.
+
+**View (`app/Views/artikel/index.php`):**
+Implementasi layout *sidebar* menggunakan sistem grid Bootstrap 5.
+
+### Screenshot Hasil Tugas Tambahan
+<img width="1919" height="953" alt="image" src="https://github.com/user-attachments/assets/24633f91-2de3-4270-962d-1bb4c63629c1" />
+
+<img width="1919" height="949" alt="image" src="https://github.com/user-attachments/assets/365d5f3a-04bb-409e-9869-fcc703a8e246" />
 
 
 ---
 © 2026 - Abdi Putra Perdana - Universitas Pelita Bangsa
+
 
